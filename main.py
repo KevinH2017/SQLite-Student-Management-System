@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, \
     QLineEdit, QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, \
         QDialog, QVBoxLayout, QComboBox
 from PyQt6.QtGui import QAction
+from PyQt6.QtCore import Qt
 import sys, sqlite3
 
 
@@ -18,16 +19,16 @@ class MainWindow(QMainWindow):
         edit_menu_item = self.menuBar().addMenu("&Edit")
 
         add_student = QAction("Add Student", self)
-        add_student.triggered.connect(self.insert)
         file_menu_item.addAction(add_student)
+        add_student.triggered.connect(self.insert)  
 
         about_action = QAction("About", self)
         help_menu_item.addAction(about_action)
         about_action.setMenuRole(QAction.MenuRole.NoRole)
 
         search_action = QAction("Search", self)
-        search_action.triggered.connect(self.search)
         edit_menu_item.addAction(search_action)
+        search_action.triggered.connect(self.search)
 
         self.table = QTableWidget()
         self.table.setColumnCount(4)
@@ -75,9 +76,21 @@ class SearchRecord(QDialog):
         layout.addWidget(button)
 
         self.setLayout(layout)
-        
+
     def search_record(self):
-        pass
+        name = self.student_name.text()
+        connection = sqlite3.connect("./app13/database.db")
+        cursor = connection.cursor()
+        result = cursor.execute("SELECT * FROM students WHERE name = ?", (name,))
+        rows = list(result)
+        print(rows)
+        items = student_db.table.findItems(name, Qt.MatchFlag.MatchFixedString)
+        for item in items:
+            print(item)
+            student_db.table.item(item.row(), 1).setSelected(True)
+
+        cursor.close()
+        connection.close()
 
 
 class InsertRecord(QDialog):
