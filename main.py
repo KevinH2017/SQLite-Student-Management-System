@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         help_menu_item = self.menuBar().addMenu("&Help")
         edit_menu_item = self.menuBar().addMenu("&Edit")
 
-        add_student = QAction(QIcon("./app13/icons/add.png"), "Add Student", self)
+        add_student = QAction(QIcon("./icons/add.png"), "Add Student", self)
         file_menu_item.addAction(add_student)
         add_student.triggered.connect(self.insert)  
 
@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         about_action.setMenuRole(QAction.MenuRole.NoRole)
         about_action.triggered.connect(self.about)
 
-        search_action = QAction(QIcon("./app13/icons/search.png"), "Search", self)
+        search_action = QAction(QIcon("./icons/search.png"), "Search", self)
         edit_menu_item.addAction(search_action)
         search_action.triggered.connect(self.search)
 
@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
 
     def load_data(self):
         """Gets data from database.db and puts it into rows and columns"""
-        connection = sqlite3.connect("./app13/database.db")
+        connection = sqlite3.connect("./database.db")
         result = connection.execute("SELECT * FROM students")
         self.table.setRowCount(0)
         for row_number, row_data in enumerate(result):
@@ -153,7 +153,7 @@ class EditRecord(QDialog):
         self.setLayout(layout)
  
     def update_student(self):
-        connection = sqlite3.connect("./app13/database.db")
+        connection = sqlite3.connect("./database.db")
         cursor = connection.cursor()
         cursor.execute("UPDATE students SET name=?, course=?, mobile=? WHERE id=?", 
         (self.student_name.text(), 
@@ -190,7 +190,7 @@ class DeleteRecord(QDialog):
         index = student_db.table.currentRow()
         student_id = student_db.table.item(index, 0).text()
 
-        connection = sqlite3.connect("./app13/database.db")
+        connection = sqlite3.connect("./database.db")
         cursor = connection.cursor()
         cursor.execute("DELETE from students WHERE id=?", (student_id, ))
         connection.commit()
@@ -231,7 +231,7 @@ class SearchRecord(QDialog):
     def search_record(self):
         """Searches database for student with inputed name"""
         name = self.student_name.text()
-        connection = sqlite3.connect("./app13/database.db")
+        connection = sqlite3.connect("./database.db")
         cursor = connection.cursor()
         result = cursor.execute("SELECT * FROM students WHERE name=?", (name,))
         rows = list(result)
@@ -284,7 +284,7 @@ class InsertRecord(QDialog):
         name = self.student_name.text()
         course = self.course_name.itemText(self.course_name.currentIndex())
         phone_num = self.phone_number.text()
-        connection = sqlite3.connect("./app13/database.db")
+        connection = sqlite3.connect("./database.db")
         cursor = connection.cursor()
         cursor.execute("INSERT INTO students (name, course, mobile) VALUES (?,?,?)", (name, course, phone_num))
 
